@@ -12,18 +12,12 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
-        "asciisd/kyc-core": "dev-main"
+        "asciisd/kyc-core": "^1.1"
     },
     "require-dev": {
         "orchestra/testbench": "^10.0",
         "pestphp/pest": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.0"
-    },
-    "repositories": {
-        "kyc-core": {
-            "type": "path",
-            "url": "../laravel-kyc-core"
-        }
     },
     "autoload": {
         "psr-4": {

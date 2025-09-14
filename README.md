@@ -128,11 +128,11 @@ SHUFTIPRO_CALLBACK_URL=https://yourdomain.com/api/kyc/webhook
 
 #### Benefits
 
-- ✅ **Zero Setup** - Works immediately after installation
-- ✅ **Automatic Processing** - Webhooks processed with proper status mapping
-- ✅ **Secure** - Built-in signature validation
-- ✅ **Logged** - Comprehensive logging for debugging
-- ✅ **Consistent** - Same behavior across all applications
+-   ✅ **Zero Setup** - Works immediately after installation
+-   ✅ **Automatic Processing** - Webhooks processed with proper status mapping
+-   ✅ **Secure** - Built-in signature validation
+-   ✅ **Logged** - Comprehensive logging for debugging
+-   ✅ **Consistent** - Same behavior across all applications
 
 #### Manual Webhook Processing (Optional)
 
@@ -260,7 +260,7 @@ The driver automatically maps ShuftiPro events to standardized KYC statuses:
 ```php
 // ShuftiPro Event → KYC Status
 'request.pending'           → RequestPending
-'verification.pending'      → InProgress  
+'verification.pending'      → InProgress
 'verification.in_progress'  → InProgress
 'verification.review_pending' → ReviewPending
 'verification.completed'    → Completed
@@ -274,10 +274,10 @@ The driver automatically maps ShuftiPro events to standardized KYC statuses:
 
 ### Benefits
 
-- ✅ **Automatic Mapping** - No manual status handling required
-- ✅ **Standardized** - Consistent status across all KYC providers
-- ✅ **Provider-Specific** - Handles ShuftiPro's unique event names
-- ✅ **Extensible** - Easy to add new event mappings
+-   ✅ **Automatic Mapping** - No manual status handling required
+-   ✅ **Standardized** - Consistent status across all KYC providers
+-   ✅ **Provider-Specific** - Handles ShuftiPro's unique event names
+-   ✅ **Extensible** - Easy to add new event mappings
 
 ## API Reference
 

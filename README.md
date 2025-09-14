@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/packagist/l/asciisd/kyc-shuftipro.svg?style=flat-square)](https://packagist.org/packages/asciisd/kyc-shuftipro)
 [![PHP Version](https://img.shields.io/packagist/php-v/asciisd/kyc-shuftipro.svg?style=flat-square)](https://packagist.org/packages/asciisd/kyc-shuftipro)
 
-A Laravel package that provides ShuftiPro integration for the Asciisd KYC Core package. This package implements the KYC driver interface to enable ShuftiPro identity verification services.
+A Laravel package that provides **ShuftiPro integration** for the Asciisd KYC Core package. Features **automatic webhook handling**, **provider-specific status mapping**, and **zero-config infrastructure routes**.
 
 ## Package Information
 
@@ -15,15 +15,18 @@ A Laravel package that provides ShuftiPro integration for the Asciisd KYC Core p
 -   **Laravel Requirements**: ^12.0
 -   **License**: MIT
 
-## Features
+## ✨ Features
 
--   **Complete ShuftiPro Integration**: Full API integration with ShuftiPro services
--   **Journey Support**: Support for both IDV journeys and direct API verification
--   **Document Management**: Automatic document download and storage
--   **Webhook Handling**: Secure webhook processing with signature validation
--   **Image Processing**: Support for document images, selfies, and verification videos
--   **Duplicate Detection**: Built-in duplicate account detection
--   **Comprehensive Logging**: Detailed logging for debugging and monitoring
+-   **🚀 Zero-Config Setup**: Automatic webhook routes - no manual configuration needed!
+-   **🎯 Smart Status Mapping**: ShuftiPro-specific event mapping to standardized KYC statuses
+-   **🔄 Complete Integration**: Full API integration with ShuftiPro services
+-   **🛣️ Journey Support**: Support for both IDV journeys and direct API verification
+-   **📁 Document Management**: Automatic document download and storage
+-   **🔒 Secure Webhooks**: Signature validation and comprehensive logging
+-   **🖼️ Image Processing**: Support for document images, selfies, and verification videos
+-   **🔍 Duplicate Detection**: Built-in duplicate account detection
+-   **📊 Comprehensive Logging**: Detailed logging for debugging and monitoring
+-   **⚡ Auto-Infrastructure**: Webhook endpoints automatically registered by KYC Core
 
 ## Installation
 
@@ -101,22 +104,47 @@ $request = new KycVerificationRequest(
 $response = Kyc::createVerification($user, $request);
 ```
 
-### Webhook Handling
+### 🚀 Automatic Webhook Handling
 
-Create a webhook endpoint in your routes:
+**NEW!** Webhooks are now handled automatically - no manual route setup required!
+
+#### Auto-Registered Webhook Routes
+
+The KYC Core package automatically registers these routes:
 
 ```php
-// routes/web.php
-Route::post('/webhooks/kyc/callback', function (Request $request) {
-    $response = Kyc::processWebhook($request->all(), $request->headers->all());
+POST   /api/kyc/webhook                 // ✅ Use this URL in ShuftiPro dashboard
+POST   /api/kyc/webhook/callback        // ✅ Alternative webhook endpoint
+GET    /api/kyc/verification/complete   // ✅ Verification completion callback
+```
 
-    // Handle the response
-    if ($response->isSuccessful()) {
-        // Verification successful
-    }
+#### ShuftiPro Configuration
 
-    return response()->json(['status' => 'received']);
-});
+Simply configure your ShuftiPro webhook URL to:
+
+```env
+SHUFTIPRO_CALLBACK_URL=https://yourdomain.com/api/kyc/webhook
+```
+
+#### Benefits
+
+- ✅ **Zero Setup** - Works immediately after installation
+- ✅ **Automatic Processing** - Webhooks processed with proper status mapping
+- ✅ **Secure** - Built-in signature validation
+- ✅ **Logged** - Comprehensive logging for debugging
+- ✅ **Consistent** - Same behavior across all applications
+
+#### Manual Webhook Processing (Optional)
+
+If you need custom webhook handling:
+
+```php
+// Optional: Custom webhook processing
+$response = Kyc::processWebhook($request->all(), $request->headers->all());
+
+if ($response->isSuccessful()) {
+    // Custom logic after successful verification
+}
 ```
 
 ### Document Management
@@ -224,6 +252,32 @@ try {
 ```bash
 composer test
 ```
+
+## 🎯 ShuftiPro Status Mapping
+
+The driver automatically maps ShuftiPro events to standardized KYC statuses:
+
+```php
+// ShuftiPro Event → KYC Status
+'request.pending'           → RequestPending
+'verification.pending'      → InProgress  
+'verification.in_progress'  → InProgress
+'verification.review_pending' → ReviewPending
+'verification.completed'    → Completed
+'verification.approved'     → Completed
+'verification.accepted'     → VerificationCompleted
+'verification.failed'       → VerificationFailed
+'verification.declined'     → Rejected
+'verification.cancelled'    → VerificationCancelled
+'request.timeout'          → RequestTimeout
+```
+
+### Benefits
+
+- ✅ **Automatic Mapping** - No manual status handling required
+- ✅ **Standardized** - Consistent status across all KYC providers
+- ✅ **Provider-Specific** - Handles ShuftiPro's unique event names
+- ✅ **Extensible** - Easy to add new event mappings
 
 ## API Reference
 

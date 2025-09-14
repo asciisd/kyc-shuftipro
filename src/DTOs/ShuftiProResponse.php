@@ -116,7 +116,7 @@ class ShuftiProResponse
         return new self(
             reference: $response['reference'] ?? '',
             event: $response['event'] ?? 'unknown',
-            success: $response['result']['event'] === 'verification.completed' ?? false,
+            success: ($response['result']['event'] ?? '') === 'verification.completed',
             verificationUrl: $response['verification_url'] ?? null,
             extractedData: $response['extracted_data'] ?? null,
             verificationResults: $response['verification_results'] ?? null,

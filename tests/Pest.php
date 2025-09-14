@@ -14,6 +14,6 @@ use Orchestra\Testbench\Concerns\WithWorkbench;
 */
 
 uses(
-    Tests\TestCase::class,
+    Asciisd\KycShuftiPro\Tests\TestCase::class,
     WithWorkbench::class,
 )->in('Feature', 'Unit');

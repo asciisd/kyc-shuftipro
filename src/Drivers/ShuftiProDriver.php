@@ -107,6 +107,24 @@ class ShuftiProDriver implements KycDriverInterface
         return Config::get('kyc.drivers.shuftipro.supports', []);
     }
 
+    public function mapEventToStatus(string $event): \Asciisd\KycCore\Enums\KycStatusEnum
+    {
+        return match ($event) {
+            'request.pending' => \Asciisd\KycCore\Enums\KycStatusEnum::RequestPending,
+            'verification.pending' => \Asciisd\KycCore\Enums\KycStatusEnum::InProgress,
+            'verification.in_progress' => \Asciisd\KycCore\Enums\KycStatusEnum::InProgress,
+            'verification.review_pending' => \Asciisd\KycCore\Enums\KycStatusEnum::ReviewPending,
+            'verification.completed' => \Asciisd\KycCore\Enums\KycStatusEnum::Completed,
+            'verification.approved' => \Asciisd\KycCore\Enums\KycStatusEnum::Completed,
+            'verification.accepted' => \Asciisd\KycCore\Enums\KycStatusEnum::VerificationCompleted,
+            'verification.failed' => \Asciisd\KycCore\Enums\KycStatusEnum::VerificationFailed,
+            'verification.declined' => \Asciisd\KycCore\Enums\KycStatusEnum::Rejected,
+            'verification.cancelled' => \Asciisd\KycCore\Enums\KycStatusEnum::VerificationCancelled,
+            'request.timeout' => \Asciisd\KycCore\Enums\KycStatusEnum::RequestTimeout,
+            default => \Asciisd\KycCore\Enums\KycStatusEnum::InProgress,
+        };
+    }
+
     /**
      * Convert KycVerificationRequest to ShuftiProRequest
      */

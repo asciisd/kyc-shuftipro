@@ -49,10 +49,21 @@ class ShuftiProApiService
         $this->logActivity('Creating verification request', $payload);
 
         $response = Http::timeout($this->timeout)
-            ->post($this->baseUrl.'/verification/request', $payload);
+            ->withBasicAuth($this->clientId, $this->secretKey)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])
+            ->post($this->baseUrl, $payload);
+
+        $this->logActivity('API Response', [
+            'status' => $response->status(),
+            'headers' => $response->headers(),
+            'body' => $response->body()
+        ]);
 
         if (! $response->successful()) {
-            throw new ShuftiProException('Failed to create verification request: '.$response->body());
+            throw new ShuftiProException('Failed to create verification request: HTTP '.$response->status().' - '.$response->body());
         }
 
         $responseData = $response->json();
@@ -86,8 +97,6 @@ class ShuftiProApiService
 
         $payload = [
             'reference' => $reference,
-            'client_id' => $this->clientId,
-            'timestamp' => time(),
         ];
 
         if ($withImages) {
@@ -95,7 +104,12 @@ class ShuftiProApiService
         }
 
         $response = Http::timeout($this->timeout)
-            ->post($this->baseUrl.'/verification/status', $payload);
+            ->withBasicAuth($this->clientId, $this->secretKey)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])
+            ->post($this->baseUrl.'/status', $payload);
 
         if (! $response->successful()) {
             throw new ShuftiProException('Failed to retrieve verification data: '.$response->body());
@@ -119,8 +133,11 @@ class ShuftiProApiService
             'language' => $request->language,
             'callback_url' => $request->callbackUrl ?? $this->getCallbackUrl(),
             'redirect_url' => $request->redirectUrl ?? $this->getRedirectUrl(),
-            'client_id' => $this->clientId,
-            'timestamp' => time(),
+            // Add required verification services
+            'face' => [],
+            'document' => [
+                'supported_types' => ['passport', 'id_card', 'driving_license']
+            ]
         ];
 
         if ($request->journeyId) {
@@ -139,30 +156,7 @@ class ShuftiProApiService
             $payload = array_merge($payload, $request->additionalData);
         }
 
-        // Add signature
-        $payload['signature'] = $this->generateSignature($payload);
-
         return $payload;
-    }
-
-    /**
-     * Generate API signature
-     */
-    private function generateSignature(array $payload): string
-    {
-        $signatureString = '';
-        ksort($payload);
-
-        foreach ($payload as $key => $value) {
-            if ($key !== 'signature') {
-                $signatureString .= $key.'='.(is_array($value) ? json_encode($value) : $value).'&';
-            }
-        }
-
-        $signatureString = rtrim($signatureString, '&');
-        $signatureString .= $this->secretKey;
-
-        return hash('sha256', $signatureString);
     }
 
     /**

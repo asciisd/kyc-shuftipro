@@ -113,10 +113,12 @@ class ShuftiProResponse
      */
     public static function fromApiResponse(array $response): self
     {
+        $event = $response['event'] ?? $response['result']['event'] ?? 'unknown';
+        
         return new self(
             reference: $response['reference'] ?? '',
-            event: $response['event'] ?? 'unknown',
-            success: ($response['result']['event'] ?? '') === 'verification.completed',
+            event: $event,
+            success: in_array($event, ['verification.completed', 'verification.approved', 'request.pending']),
             verificationUrl: $response['verification_url'] ?? null,
             extractedData: $response['extracted_data'] ?? null,
             verificationResults: $response['verification_results'] ?? null,

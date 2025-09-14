@@ -1,16 +1,29 @@
 # Asciisd KYC ShuftiPro Driver
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/asciisd/kyc-shuftipro.svg?style=flat-square)](https://packagist.org/packages/asciisd/kyc-shuftipro)
+[![Total Downloads](https://img.shields.io/packagist/dt/asciisd/kyc-shuftipro.svg?style=flat-square)](https://packagist.org/packages/asciisd/kyc-shuftipro)
+[![License](https://img.shields.io/packagist/l/asciisd/kyc-shuftipro.svg?style=flat-square)](https://packagist.org/packages/asciisd/kyc-shuftipro)
+[![PHP Version](https://img.shields.io/packagist/php-v/asciisd/kyc-shuftipro.svg?style=flat-square)](https://packagist.org/packages/asciisd/kyc-shuftipro)
+
 A Laravel package that provides ShuftiPro integration for the Asciisd KYC Core package. This package implements the KYC driver interface to enable ShuftiPro identity verification services.
+
+## Package Information
+
+-   **Package**: [asciisd/kyc-shuftipro](https://packagist.org/packages/asciisd/kyc-shuftipro)
+-   **Latest Version**: v1.0.0
+-   **PHP Requirements**: ^8.2
+-   **Laravel Requirements**: ^12.0
+-   **License**: MIT
 
 ## Features
 
-- **Complete ShuftiPro Integration**: Full API integration with ShuftiPro services
-- **Journey Support**: Support for both IDV journeys and direct API verification
-- **Document Management**: Automatic document download and storage
-- **Webhook Handling**: Secure webhook processing with signature validation
-- **Image Processing**: Support for document images, selfies, and verification videos
-- **Duplicate Detection**: Built-in duplicate account detection
-- **Comprehensive Logging**: Detailed logging for debugging and monitoring
+-   **Complete ShuftiPro Integration**: Full API integration with ShuftiPro services
+-   **Journey Support**: Support for both IDV journeys and direct API verification
+-   **Document Management**: Automatic document download and storage
+-   **Webhook Handling**: Secure webhook processing with signature validation
+-   **Image Processing**: Support for document images, selfies, and verification videos
+-   **Duplicate Detection**: Built-in duplicate account detection
+-   **Comprehensive Logging**: Detailed logging for debugging and monitoring
 
 ## Installation
 
@@ -156,25 +169,25 @@ $documents = Kyc::downloadDocuments($user, $reference);
 
 ### Document Types
 
-- Identity documents (passport, driver's license, national ID)
-- Address verification documents
-- Selfie verification
-- Video verification
-- Verification reports
+-   Identity documents (passport, driver's license, national ID)
+-   Address verification documents
+-   Selfie verification
+-   Video verification
+-   Verification reports
 
 ### Verification Methods
 
-- IDV Journey verification
-- Direct API verification
-- Custom journey configurations
-- Country-specific verification rules
+-   IDV Journey verification
+-   Direct API verification
+-   Custom journey configurations
+-   Country-specific verification rules
 
 ### Security Features
 
-- Webhook signature validation
-- Secure document storage
-- Duplicate account detection
-- Comprehensive audit logging
+-   Webhook signature validation
+-   Secure document storage
+-   Duplicate account detection
+-   Comprehensive audit logging
 
 ## Events
 
@@ -216,23 +229,23 @@ composer test
 
 ### ShuftiProDriver Methods
 
-- `createVerification(Model $user, KycVerificationRequest $request): KycVerificationResponse`
-- `createSimpleVerification(Model $user, array $options = []): KycVerificationResponse`
-- `retrieveVerification(string $reference): KycVerificationResponse`
-- `processWebhook(array $payload, array $headers = []): KycVerificationResponse`
-- `downloadDocuments(Model $user, string $reference): array`
-- `validateWebhookSignature(array $payload, array $headers): bool`
+-   `createVerification(Model $user, KycVerificationRequest $request): KycVerificationResponse`
+-   `createSimpleVerification(Model $user, array $options = []): KycVerificationResponse`
+-   `retrieveVerification(string $reference): KycVerificationResponse`
+-   `processWebhook(array $payload, array $headers = []): KycVerificationResponse`
+-   `downloadDocuments(Model $user, string $reference): array`
+-   `validateWebhookSignature(array $payload, array $headers): bool`
 
 ### Response Data
 
 The package returns comprehensive verification data including:
 
-- Verification status and results
-- Extracted document data
-- Document image URLs
-- Verification video URLs
-- Duplicate detection results
-- Decline reasons (if applicable)
+-   Verification status and results
+-   Extracted document data
+-   Document image URLs
+-   Verification video URLs
+-   Duplicate detection results
+-   Decline reasons (if applicable)
 
 ## Contributing
 

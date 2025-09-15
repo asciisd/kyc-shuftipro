@@ -163,7 +163,7 @@ class ShuftiProDriver implements KycDriverInterface
             country: $shuftiProResponse->country ?? null,
             duplicateDetected: $shuftiProResponse->hasDuplicateAccount() ?? null,
             declineReason: $shuftiProResponse->getDeclineReason() ?? null,
-            rawResponse: $shuftiProResponse->toArray(),
+            rawResponse: $shuftiProResponse->rawResponse,
             message: $shuftiProResponse->getMessage() ?? null,
         );
     }

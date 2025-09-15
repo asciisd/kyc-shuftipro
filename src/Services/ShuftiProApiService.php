@@ -59,7 +59,7 @@ class ShuftiProApiService
         $this->logActivity('API Response', [
             'status' => $response->status(),
             'headers' => $response->headers(),
-            'body' => $response->body()
+            'body' => $response->body(),
         ]);
 
         if (! $response->successful()) {
@@ -126,18 +126,20 @@ class ShuftiProApiService
      */
     private function buildVerificationPayload(ShuftiProRequest $request): array
     {
+        $reference = $request->reference ?? $this->generateReference();
+
         $payload = [
-            'reference' => $request->reference ?? $this->generateReference(),
+            'reference' => $reference,
             'email' => $request->email,
             'country' => $request->country,
             'language' => $request->language,
             'callback_url' => $request->callbackUrl ?? $this->getCallbackUrl(),
-            'redirect_url' => $request->redirectUrl ?? $this->getRedirectUrl(),
+            'redirect_url' => $request->redirectUrl ?? $this->getRedirectUrlWithReference($reference),
             // Add required verification services
             'face' => [],
             'document' => [
-                'supported_types' => ['passport', 'id_card', 'driving_license']
-            ]
+                'supported_types' => ['passport', 'id_card', 'driving_license'],
+            ],
         ];
 
         if ($request->journeyId) {
@@ -181,6 +183,19 @@ class ShuftiProApiService
     private function getRedirectUrl(): string
     {
         return config('shuftipro.webhook.redirect_url', route('kyc.verification.complete'));
+    }
+
+    /**
+     * Get redirect URL with reference parameter
+     */
+    private function getRedirectUrlWithReference(string $reference): string
+    {
+        $baseUrl = $this->getRedirectUrl();
+
+        // Add reference parameter to the URL
+        $separator = str_contains($baseUrl, '?') ? '&' : '?';
+
+        return $baseUrl.$separator.'reference='.urlencode($reference);
     }
 
     /**

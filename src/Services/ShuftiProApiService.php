@@ -77,12 +77,34 @@ class ShuftiProApiService
      */
     public function createSimpleVerification(string $email, string $country = ''): ShuftiProResponse
     {
+        $reference = $this->generateReference();
+        
         $request = new ShuftiProRequest(
             email: $email,
             country: $country,
-            reference: $this->generateReference(),
+            reference: $reference,
             callbackUrl: $this->getCallbackUrl(),
-            redirectUrl: $this->getRedirectUrl(),
+            redirectUrl: $this->getRedirectUrlWithType($reference, 'simple'),
+        );
+
+        return $this->createVerification($request);
+    }
+
+    /**
+     * Create a journey-based verification
+     */
+    public function createJourneyVerification(string $email, string $country = '', string $language = 'en', string $journeyId = ''): ShuftiProResponse
+    {
+        $reference = $this->generateReference();
+        
+        $request = new ShuftiProRequest(
+            email: $email,
+            country: $country,
+            language: $language,
+            reference: $reference,
+            callbackUrl: $this->getCallbackUrl(),
+            redirectUrl: $this->getRedirectUrlWithType($reference, 'journey'),
+            journeyId: $journeyId,
         );
 
         return $this->createVerification($request);
@@ -196,6 +218,23 @@ class ShuftiProApiService
         $separator = str_contains($baseUrl, '?') ? '&' : '?';
 
         return $baseUrl.$separator.'reference='.urlencode($reference);
+    }
+
+    /**
+     * Get redirect URL with reference and verification type parameters
+     */
+    private function getRedirectUrlWithType(string $reference, string $verificationType): string
+    {
+        $baseUrl = $this->getRedirectUrl();
+
+        // Add reference and type parameters to the URL
+        $separator = str_contains($baseUrl, '?') ? '&' : '?';
+        $params = [
+            'reference' => $reference,
+            'type' => $verificationType,
+        ];
+
+        return $baseUrl.$separator.http_build_query($params);
     }
 
     /**

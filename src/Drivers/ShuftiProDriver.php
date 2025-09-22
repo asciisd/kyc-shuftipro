@@ -35,7 +35,19 @@ class ShuftiProDriver implements KycDriverInterface
     public function createSimpleVerification(Model $user, array $options = []): KycVerificationResponse
     {
         $country = $options['country'] ?? '';
-        $response = $this->apiService->createSimpleVerification($user->email, $country);
+        $language = $options['language'] ?? 'en';
+        
+        // Check if journeys are enabled and prioritize journey verification
+        $journeysEnabled = Config::get('shuftipro.idv_journeys.enabled', false);
+        $defaultJourneyId = Config::get('shuftipro.idv_journeys.default_journey_id');
+        
+        if ($journeysEnabled && !empty($defaultJourneyId)) {
+            // Use journey-based verification
+            $response = $this->apiService->createJourneyVerification($user->email, $country, $language, $defaultJourneyId);
+        } else {
+            // Fall back to simple verification
+            $response = $this->apiService->createSimpleVerification($user->email, $country);
+        }
 
         return $this->convertToKycResponse($response);
     }

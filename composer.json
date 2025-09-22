@@ -1,5 +1,6 @@
 {
     "name": "asciisd/kyc-shuftipro",
+    "version": "1.4.0",
     "description": "ShuftiPro driver for KYC (Know Your Customer) verification",
     "type": "library",
     "license": "MIT",

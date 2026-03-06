@@ -352,6 +352,32 @@ class ShuftiProDriverTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public static function shuftiProEventStatusProvider(): array
+    {
+        return [
+            'request.pending maps to RequestPending' => ['request.pending', \Asciisd\KycCore\Enums\KycStatusEnum::RequestPending],
+            'request.received maps to InProgress' => ['request.received', \Asciisd\KycCore\Enums\KycStatusEnum::InProgress],
+            'request.invalid maps to VerificationFailed' => ['request.invalid', \Asciisd\KycCore\Enums\KycStatusEnum::VerificationFailed],
+            'request.cancelled maps to VerificationCancelled' => ['request.cancelled', \Asciisd\KycCore\Enums\KycStatusEnum::VerificationCancelled],
+            'request.timeout maps to RequestTimeout' => ['request.timeout', \Asciisd\KycCore\Enums\KycStatusEnum::RequestTimeout],
+            'review.pending maps to ReviewPending' => ['review.pending', \Asciisd\KycCore\Enums\KycStatusEnum::ReviewPending],
+            'verification.accepted maps to VerificationCompleted' => ['verification.accepted', \Asciisd\KycCore\Enums\KycStatusEnum::VerificationCompleted],
+            'verification.declined maps to Rejected' => ['verification.declined', \Asciisd\KycCore\Enums\KycStatusEnum::Rejected],
+            'verification.cancelled maps to VerificationCancelled' => ['verification.cancelled', \Asciisd\KycCore\Enums\KycStatusEnum::VerificationCancelled],
+            'unknown event falls back to InProgress' => ['some.unknown.event', \Asciisd\KycCore\Enums\KycStatusEnum::InProgress],
+        ];
+    }
+
+    /**
+     * @dataProvider shuftiProEventStatusProvider
+     */
+    public function test_map_event_to_status(string $event, \Asciisd\KycCore\Enums\KycStatusEnum $expectedStatus)
+    {
+        $status = $this->driver->mapEventToStatus($event);
+
+        $this->assertEquals($expectedStatus, $status);
+    }
+
     private function createTestUser(): Model
     {
         return new class extends Model

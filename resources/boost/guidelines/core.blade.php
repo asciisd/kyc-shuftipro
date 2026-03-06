@@ -31,6 +31,7 @@ if ($response->hasVerificationUrl()) {
 
 ### Events (from kyc-core)
 
+- `KycStatusChanged` — Dispatched on every status transition (e.g. `InProgress` → `ReviewPending`).
 - `VerificationCompleted` — Dispatched when ShuftiPro reports `verification.accepted`.
 - `VerificationFailed` — Dispatched when ShuftiPro reports `verification.declined`.
 
@@ -38,12 +39,14 @@ if ($response->hasVerificationUrl()) {
 
 | ShuftiPro Event | KycStatusEnum |
 |-----------------|---------------|
-| `verification.accepted` | `Completed` |
-| `verification.declined` | `Rejected` |
 | `request.pending` | `RequestPending` |
 | `request.received` | `InProgress` |
-| `review.pending` | `ReviewPending` |
+| `request.invalid` | `VerificationFailed` |
+| `request.cancelled` | `VerificationCancelled` |
 | `request.timeout` | `RequestTimeout` |
+| `review.pending` | `ReviewPending` |
+| `verification.accepted` | `VerificationCompleted` |
+| `verification.declined` | `Rejected` |
 | `verification.cancelled` | `VerificationCancelled` |
 
 ### Config

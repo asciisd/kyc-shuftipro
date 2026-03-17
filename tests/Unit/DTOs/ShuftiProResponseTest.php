@@ -2,6 +2,7 @@
 
 namespace Asciisd\KycShuftiPro\Tests\Unit\DTOs;
 
+use Asciisd\KycCore\DTOs\KycVerificationResponse;
 use Asciisd\KycShuftiPro\DTOs\ShuftiProResponse;
 use Asciisd\KycShuftiPro\Tests\TestCase;
 
@@ -377,5 +378,45 @@ class ShuftiProResponseTest extends TestCase
         // This should not throw an error during instantiation
         // But attempting to modify would cause a fatal error
         $this->assertEquals('sp_ref', $response->reference);
+    }
+
+    public function test_to_kyc_verification_response_maps_all_fields()
+    {
+        $response = new ShuftiProResponse(
+            reference: 'sp_ref_123',
+            event: 'verification.completed',
+            success: true,
+            verificationUrl: 'https://shuftipro.verification.url',
+            extractedData: ['name' => 'John Doe'],
+            verificationResults: ['document' => 'verified'],
+            documentImages: ['front.jpg'],
+            verificationVideo: 'https://video.url',
+            verificationReport: 'https://report.url',
+            imageAccessToken: 'token_123',
+            country: 'US',
+            duplicateDetected: false,
+            declineReason: null,
+            rawResponse: ['raw' => 'data'],
+            message: 'OK',
+        );
+
+        $kycResponse = $response->toKycVerificationResponse();
+
+        $this->assertInstanceOf(KycVerificationResponse::class, $kycResponse);
+        $this->assertEquals('sp_ref_123', $kycResponse->reference);
+        $this->assertEquals('verification.completed', $kycResponse->event);
+        $this->assertTrue($kycResponse->success);
+        $this->assertEquals('https://shuftipro.verification.url', $kycResponse->verificationUrl);
+        $this->assertEquals(['name' => 'John Doe'], $kycResponse->extractedData);
+        $this->assertEquals(['document' => 'verified'], $kycResponse->verificationResults);
+        $this->assertEquals(['front.jpg'], $kycResponse->documentImages);
+        $this->assertEquals('https://video.url', $kycResponse->verificationVideo);
+        $this->assertEquals('https://report.url', $kycResponse->verificationReport);
+        $this->assertEquals('token_123', $kycResponse->imageAccessToken);
+        $this->assertEquals('US', $kycResponse->country);
+        $this->assertFalse($kycResponse->duplicateDetected);
+        $this->assertNull($kycResponse->declineReason);
+        $this->assertEquals(['raw' => 'data'], $kycResponse->rawResponse);
+        $this->assertEquals('OK', $kycResponse->message);
     }
 }

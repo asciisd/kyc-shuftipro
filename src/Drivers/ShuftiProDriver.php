@@ -5,6 +5,7 @@ namespace Asciisd\KycShuftiPro\Drivers;
 use Asciisd\KycCore\Contracts\KycDriverInterface;
 use Asciisd\KycCore\DTOs\KycVerificationRequest;
 use Asciisd\KycCore\DTOs\KycVerificationResponse;
+use Asciisd\KycCore\Enums\KycStatusEnum;
 use Asciisd\KycShuftiPro\DTOs\ShuftiProRequest;
 use Asciisd\KycShuftiPro\DTOs\ShuftiProResponse;
 use Asciisd\KycShuftiPro\Services\ShuftiProApiService;
@@ -36,12 +37,12 @@ class ShuftiProDriver implements KycDriverInterface
     {
         $country = $options['country'] ?? '';
         $language = $options['language'] ?? 'en';
-        
+
         // Check if journeys are enabled and prioritize journey verification
         $journeysEnabled = Config::get('shuftipro.idv_journeys.enabled', false);
         $defaultJourneyId = Config::get('shuftipro.idv_journeys.default_journey_id');
-        
-        if ($journeysEnabled && !empty($defaultJourneyId)) {
+
+        if ($journeysEnabled && ! empty($defaultJourneyId)) {
             // Use journey-based verification
             $response = $this->apiService->createJourneyVerification($user->email, $country, $language, $defaultJourneyId);
         } else {
@@ -119,19 +120,19 @@ class ShuftiProDriver implements KycDriverInterface
         return Config::get('kyc.drivers.shuftipro.supports', []);
     }
 
-    public function mapEventToStatus(string $event): \Asciisd\KycCore\Enums\KycStatusEnum
+    public function mapEventToStatus(string $event): KycStatusEnum
     {
         return match ($event) {
-            'request.pending' => \Asciisd\KycCore\Enums\KycStatusEnum::RequestPending,
-            'request.received' => \Asciisd\KycCore\Enums\KycStatusEnum::InProgress,
-            'request.invalid' => \Asciisd\KycCore\Enums\KycStatusEnum::VerificationFailed,
-            'request.cancelled' => \Asciisd\KycCore\Enums\KycStatusEnum::VerificationCancelled,
-            'request.timeout' => \Asciisd\KycCore\Enums\KycStatusEnum::RequestTimeout,
-            'review.pending' => \Asciisd\KycCore\Enums\KycStatusEnum::ReviewPending,
-            'verification.accepted' => \Asciisd\KycCore\Enums\KycStatusEnum::VerificationCompleted,
-            'verification.declined' => \Asciisd\KycCore\Enums\KycStatusEnum::Rejected,
-            'verification.cancelled' => \Asciisd\KycCore\Enums\KycStatusEnum::VerificationCancelled,
-            default => \Asciisd\KycCore\Enums\KycStatusEnum::InProgress,
+            'request.pending' => KycStatusEnum::RequestPending,
+            'request.received' => KycStatusEnum::InProgress,
+            'request.invalid' => KycStatusEnum::VerificationFailed,
+            'request.cancelled' => KycStatusEnum::VerificationCancelled,
+            'request.timeout' => KycStatusEnum::RequestTimeout,
+            'review.pending' => KycStatusEnum::ReviewPending,
+            'verification.accepted' => KycStatusEnum::VerificationCompleted,
+            'verification.declined' => KycStatusEnum::Rejected,
+            'verification.cancelled' => KycStatusEnum::VerificationCancelled,
+            default => KycStatusEnum::InProgress,
         };
     }
 

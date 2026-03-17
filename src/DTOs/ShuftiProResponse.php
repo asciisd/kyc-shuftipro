@@ -2,6 +2,8 @@
 
 namespace Asciisd\KycShuftiPro\DTOs;
 
+use Asciisd\KycCore\DTOs\KycVerificationResponse;
+
 class ShuftiProResponse
 {
     public function __construct(
@@ -87,6 +89,30 @@ class ShuftiProResponse
         return $this->message;
     }
 
+    /**
+     * Convert to the driver-agnostic KycVerificationResponse DTO.
+     */
+    public function toKycVerificationResponse(): KycVerificationResponse
+    {
+        return new KycVerificationResponse(
+            reference: $this->reference,
+            event: $this->event,
+            success: $this->success,
+            verificationUrl: $this->verificationUrl,
+            extractedData: $this->extractedData,
+            verificationResults: $this->verificationResults,
+            documentImages: $this->documentImages,
+            verificationVideo: $this->verificationVideo,
+            verificationReport: $this->verificationReport,
+            imageAccessToken: $this->imageAccessToken,
+            country: $this->country,
+            duplicateDetected: $this->duplicateDetected,
+            declineReason: $this->declineReason,
+            rawResponse: $this->rawResponse,
+            message: $this->message,
+        );
+    }
+
     public function toArray(): array
     {
         return [
@@ -114,7 +140,7 @@ class ShuftiProResponse
     public static function fromApiResponse(array $response): self
     {
         $event = $response['event'] ?? $response['result']['event'] ?? 'unknown';
-        
+
         return new self(
             reference: $response['reference'] ?? '',
             event: $event,

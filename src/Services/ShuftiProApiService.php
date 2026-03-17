@@ -78,7 +78,7 @@ class ShuftiProApiService
     public function createSimpleVerification(string $email, string $country = ''): ShuftiProResponse
     {
         $reference = $this->generateReference();
-        
+
         $request = new ShuftiProRequest(
             email: $email,
             country: $country,
@@ -96,7 +96,7 @@ class ShuftiProApiService
     public function createJourneyVerification(string $email, string $country = '', string $language = 'en', string $journeyId = ''): ShuftiProResponse
     {
         $reference = $this->generateReference();
-        
+
         $request = new ShuftiProRequest(
             email: $email,
             country: $country,
@@ -139,6 +139,50 @@ class ShuftiProApiService
 
         $responseData = $response->json();
         $this->logActivity('Verification status response', $responseData);
+
+        return ShuftiProResponse::fromApiResponse($responseData);
+    }
+
+    /**
+     * Retrieve verification data using explicit credentials (for cross-environment retrieval).
+     */
+    public function retrieveWithCredentials(
+        string $reference,
+        string $clientId,
+        string $secretKey,
+        string $baseUrl,
+        bool $withImages = true,
+    ): ShuftiProResponse {
+        $this->logActivity('Retrieving verification from external environment', [
+            'reference' => $reference,
+            'base_url' => $baseUrl,
+        ]);
+
+        $payload = ['reference' => $reference];
+
+        if ($withImages) {
+            $payload['get_images'] = 1;
+        }
+
+        $response = Http::timeout($this->timeout)
+            ->withBasicAuth($clientId, $secretKey)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])
+            ->post($baseUrl.'/status', $payload);
+
+        if (! $response->successful()) {
+            throw new ShuftiProException(
+                'Failed to retrieve verification from external environment: HTTP '.$response->status().' - '.$response->body()
+            );
+        }
+
+        $responseData = $response->json();
+        $this->logActivity('External environment verification response', [
+            'reference' => $reference,
+            'event' => $responseData['event'] ?? 'unknown',
+        ]);
 
         return ShuftiProResponse::fromApiResponse($responseData);
     }

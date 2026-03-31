@@ -1,6 +1,6 @@
 {
     "name": "asciisd/kyc-shuftipro",
-    "version": "1.8.0",
+    "version": "1.8.1",
     "description": "ShuftiPro driver for KYC (Know Your Customer) verification",
     "type": "library",
     "license": "MIT",
@@ -19,7 +19,7 @@
     "require": {
         "php": "^8.3",
         "laravel/framework": "^12.0|^13.0",
-        "asciisd/kyc-core": "^1.8"
+        "asciisd/kyc-core": "^1.9.1"
     },
     "require-dev": {
         "orchestra/testbench": "^10.0",
